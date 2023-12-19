@@ -12,7 +12,9 @@ from sqlalchemy.ext.compiler import compiles
 @compiles(CreateColumn, 'vertica')
 def use_identity(element, compiler, **kw):
     text = compiler.visit_create_column(element, **kw)
-    text = text.replace("SERIAL", "IDENTITY(1,1)")
+    ## if column name contains "SERIAL" then it was replaced with "IDENTITY(1,1)"
+    ## ex "LOT_SERIAL_NUMBER" was changed to  "LOT_IDENTITY(1,1)_NUMBER"
+    text = text.replace(" SERIAL", " IDENTITY(1,1)")
     return text
 
 
